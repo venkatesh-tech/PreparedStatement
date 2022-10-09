@@ -1,6 +1,6 @@
 package com.servlets.jdbc.preparedStatement;
 
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 
 import javax.servlet.ServletException;
@@ -31,11 +31,33 @@ public class ProductServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		doGet(request, response);
+		int id = Integer.parseInt(request.getParameter("id"));
+		String name = request.getParameter("name");
+		String desc = request.getParameter("description");
+		int price = Integer.parseInt(request.getParameter("price"));
+
+		try {
+
+			stmt.setInt(1, 1);
+			stmt.setString(2, name);
+			stmt.setString(3, desc);
+			stmt.setInt(4, price);
+
+			int result = stmt.executeUpdate();
+			response.setContentType("text/html");
+			PrintWriter out = response.getWriter();
+			out.print("<b>" + result + " Products created </b>");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+//		doGet(request, response);
 	}
 
 	public void destroy() {
 		try {
+			stmt.close();
 			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
